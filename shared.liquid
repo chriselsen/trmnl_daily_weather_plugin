@@ -1,0 +1,92 @@
+<style>
+  .view--full .weather-image {
+    width: 180px;
+  }
+
+  .weather-icon {
+    width: 50px;
+  }
+
+  .weather-icon-mini {
+    width: 24px;
+  }
+
+  .view--half_vertical .weather-image {
+    width: 160px;
+  }
+</style>
+
+{%liquid
+  assign is_day = current.is_day
+  assign image_day = ""
+  
+  for i in (0..5)
+    if i == 0
+      assign code = current.weather_code
+    else
+      assign code = daily.weather_code[i]
+    endif
+
+    if code == 0 or code == 1
+      if is_day == 1
+        assign image_day = image_day | append: "wi-day-sunny.svg,"
+        assign condition = condition | append: "Sunny,"
+      else
+        assign image_day = image_day | append: "wi-night-clear.svg,"
+        assign condition = condition | append: "Clear,"
+      endif
+    elsif code == 2 or code == 3
+      assign condition = condition | append: "Cloudy,"
+      if is_day == 1
+        assign image_day = image_day | append: "wi-day-cloudy.svg,"
+      else
+        assign image_day = image_day | append: "wi-night-cloudy.svg,"
+      endif
+    elsif code == 45 or code == 48
+      assign condition = condition | append: "Fog,"
+      if is_day == 1
+        assign image_day = image_day | append: "wi-day-fog.svg,"
+      else
+        assign image_day = image_day | append: "wi-night-fog.svg,"
+      endif
+    elsif code >= 51 and code <= 67
+      assign condition = condition | append: "Rain,"
+      if is_day == 1
+        assign image_day = image_day | append: "wi-day-rain.svg,"
+      else
+        assign image_day = image_day | append: "wi-night-rain.svg,"
+      endif
+    elsif code >= 71 and code <= 77
+      assign condition = condition | append: "Snow,"
+      if is_day == 1
+        assign image_day = image_day | append: "wi-day-snow.svg,"
+      else
+        assign image_day = image_day | append: "wi-night-snow.svg,"
+      endif
+    elsif code >= 80 and code <= 82
+      assign condition = condition | append: "Rain,"
+      if is_day == 1
+        assign image_day = image_day | append: "wi-day-rain.svg,"
+      else
+        assign image_day = image_day | append: "wi-night-rain.svg,"
+      endif
+    elsif code >= 85 and code <= 86
+      assign condition = condition | append: "Snow,"
+      if is_day == 1
+        assign image_day = image_day | append: "wi-day-snow.svg,"
+      else
+        assign image_day = image_day | append: "wi-night-snow.svg,"
+      endif
+    else
+      assign condition = condition | append: "Storm,"
+      if is_day == 1
+        assign image_day = image_day | append: "wi-day-thunderstorm.svg,"
+      else
+        assign image_day = image_day | append: "wi-night-thunderstorm.svg,"
+      endif
+    endif
+  endfor
+
+  assign image_day = image_day | split: ","
+  assign condition = condition | split: ","
+%}

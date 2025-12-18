@@ -1,0 +1,53 @@
+<div class="layout">
+  <div class="grid grid--cols-3">
+    <div class="col col--start gap text--center">
+      <span class="title">Now</span>
+      <div class="w--full">
+        <img class="weather-icon" src="https://usetrmnl.com/images/plugins/weather/{{ image_day[0] }}">
+        <br/>
+        <span class="description">{{ condition[0] }}</span>
+      </div>
+      <div class="w--full">
+        <span class="value value--xsmall">{{ current.temperature_2m | round }}°</span>
+      </div>
+      <div class="w--full">
+        <div class="flex flex--row gap--xsmall">
+          <img class="weather-icon-mini" src="https://usetrmnl.com/images/plugins/weather/wi-hot.svg">
+          <span class="value value--xxsmall mr--1">{{ daily.uv_index_max[0] | round }}</span>
+          <img class="weather-icon-mini" src="https://usetrmnl.com/images/plugins/weather/wi-rain.svg" />
+          <span class="value value--xxsmall">{{ daily.precipitation_probability_max[0] }}%</span>
+        </div>
+      </div>
+    </div>
+    {% for i in (1..2) %}
+    <div class="col col--start gap text--center">
+      {% if forloop.index == 1 %}
+      <span class="title">Tomorrow</span>
+      {% else %}
+      <span class="title">{{ daily.time[i] | date: "%A" }}</span>
+      {% endif %}
+      <div class="w--full">
+        <img class="weather-icon" src="https://usetrmnl.com/images/plugins/weather/{{ image_day[i] }}">
+        <br/>
+        <span class="description">{{ condition[i] }}</span>
+      </div>
+      <div class="w--full">
+        <span class="value value--xsmall">{{ daily.temperature_2m_min[i] | round }}° / {{ daily.temperature_2m_max[i] | round }}°</span>
+      </div>
+      <div class="w--full">
+        <div class="flex flex--row gap--xsmall">
+          <img class="weather-icon-mini" src="https://usetrmnl.com/images/plugins/weather/wi-hot.svg">
+          <span class="value value--xxsmall mr--1">{{ daily.uv_index_max[i] | round }}</span>
+          <img class="weather-icon-mini" src="https://usetrmnl.com/images/plugins/weather/wi-rain.svg" />
+          <span class="value value--xxsmall">{{ daily.precipitation_probability_max[i] }}%</span>
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+</div>
+<div class="title_bar">
+  <img class="image" src="https://usetrmnl.com/images/plugins/weather--render.svg">
+  <h1 class="title">Daily Weather</h1>
+  <span class="instance">{{ trmnl.plugin_settings.custom_fields_values.location_name }}</span>
+</div>

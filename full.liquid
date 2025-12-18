@@ -1,0 +1,87 @@
+<div class="layout layout--col gap--medium">
+  <div class="grid">
+    <div class="row row--center col--span-3 col--end">
+      <img class="weather-image" src="https://usetrmnl.com/images/plugins/weather/{{ image_day[0] }}">
+    </div>
+    <div class="col col--span-3 col--end gap--medium">
+      <span class="title">Today: {{ condition[0] }}</span>
+      <div class="item">
+        <div class="meta"></div>
+        <div class="icon">
+          <img class="weather-icon" src="https://usetrmnl.com/images/plugins/weather/wi-thermometer.svg">
+        </div>
+        <div class="content">
+          <span class="value value--small">{{ daily.temperature_2m_max[0] | round }}{{ daily_units.temperature_2m_max }} </span>
+          <span class="label">High</span>
+        </div>
+      </div>
+      <div class="item">
+        <div class="meta"></div>
+        <div class="icon">
+          <img class="weather-icon" src="https://usetrmnl.com/images/plugins/weather/wi-thermometer-exterior.svg">
+        </div>
+        <div class="content">
+          <span class="value value--small">{{ daily.temperature_2m_min[0] | round }}{{ daily_units.temperature_2m_min }}</span>
+          <span class="label">Low</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="col col--span-3 col--end gap--medium">
+      <div class="item">
+        <div class="meta"></div>
+        <div class="icon">
+          <img class="weather-icon" src="https://usetrmnl.com/images/plugins/weather/wi-raindrops.svg">
+        </div>
+        <div class="content">
+          <span class="value value--small">{{ current.relative_humidity_2m }}{{ current_units.relative_humidity_2m }}</span>
+          <span class="label">Humidity</span>
+        </div>
+      </div>
+      <div class="item">
+        <div class="meta"></div>
+        <div class="icon">
+          <img class="weather-icon" src="https://usetrmnl.com/images/plugins/weather/wi-hot.svg">
+        </div>
+        <div class="content">
+          <span class="value value--small">{{ daily.uv_index_max[0] | round }}</span>
+          <span class="label">UV Index</span>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- <div class="divider"></div> -->
+  <!-- forecast -->
+  <div class="grid grid--cols-5">
+    {% for i in (1..5) %}
+    <div class="col col--start gap--medium text--center bg--gray-75 rounded--small p--2">
+      {% if forloop.index == 1 %}
+      <span class="title text-stroke">Tomorrow</span>
+      {% else %}
+      <span class="title text-stroke">{{ daily.time[i] | date: "%A" }}</span>
+      {% endif %}
+      <div class="w--full">
+        <img class="weather-icon image-stroke" src="https://usetrmnl.com/images/plugins/weather/{{ image_day[i] }}">
+        <br/>
+        <span class="value value--xsmall text-stroke">{{ condition[i] }}</span>
+      </div>
+      <div class="w--full">
+        <span class="value value--xsmall text-stroke">{{ daily.temperature_2m_min[i] | round }}{{ daily_units.temperature_2m_max }} / {{ daily.temperature_2m_max[i] | round }}{{ daily_units.temperature_2m_min }}</span>
+      </div>
+      <div class="w--full">
+        <div class="flex flex--row gap--xsmall">
+          <img class="weather-icon-mini image-stroke" src="https://usetrmnl.com/images/plugins/weather/wi-hot.svg">
+          <span class="value value--xxsmall text-stroke mr--1">{{ daily.uv_index_max[i] | round }}</span>
+          <img class="weather-icon-mini image-stroke" src="https://usetrmnl.com/images/plugins/weather/wi-rain.svg" />
+          <span class="value value--xxsmall text-stroke">{{ daily.precipitation_probability_max[i] }}{{ daily_units.precipitation_probability_max }}</span>
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+</div>
+<div class="title_bar">
+  <img class="image" src="https://usetrmnl.com/images/plugins/weather--render.svg">
+  <h1 class="title">Daily Weather - Updated: {{ current.time | date: "%H:%M" | lstrip }}</h1>
+  <span class="instance">{{ trmnl.plugin_settings.custom_fields_values.location_name }}</span>
+</div>
