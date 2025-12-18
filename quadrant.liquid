@@ -1,14 +1,14 @@
 <div class="layout">
   <div class="grid grid--cols-3">
     <div class="col col--start gap text--center">
-      <span class="title">{% if is_before_noon %}Today{% else %}Tomorrow{% endif %}</span>
+      <span class="title">Today</span>
       <div class="w--full">
         <img class="weather-icon" src="https://usetrmnl.com/images/plugins/weather/{{ image_day[0] }}">
         <br/>
         <span class="description">{{ condition[0] }}</span>
       </div>
       <div class="w--full">
-        <span class="value value--xsmall">{{ daily_temps_min[0] | round }}° / {{ daily_temps_max[0] | round }}°</span>
+        <span class="value value--xsmall">{{ daily_temps_max[0] | round }}° / {{ daily_temps_min[0] | round }}°</span>
       </div>
       <div class="w--full">
         <div class="flex flex--row gap--xsmall">
@@ -22,7 +22,7 @@
     {% for i in (1..2) %}
     <div class="col col--start gap text--center">
       {% if forloop.index == 1 %}
-      <span class="title">{% if is_before_noon %}Tomorrow{% else %}{{ daily_dates[i] | date: "%A" }}{% endif %}</span>
+      <span class="title">{% if forloop.index == 1 %}Tomorrow{% else %}{{ daily_dates[i] | date: "%A" }}{% endif %}</span>
       {% else %}
       <span class="title">{{ daily_dates[i] | date: "%A" }}</span>
       {% endif %}
@@ -32,7 +32,7 @@
         <span class="description">{{ condition[i] }}</span>
       </div>
       <div class="w--full">
-        <span class="value value--xsmall">{{ daily_temps_min[i] | round }}° / {{ daily_temps_max[i] | round }}°</span>
+        <span class="value value--xsmall">{{ daily_temps_max[i] | round }}° / {{ daily_temps_min[i] | round }}°</span>
       </div>
       <div class="w--full">
         <div class="flex flex--row gap--xsmall">

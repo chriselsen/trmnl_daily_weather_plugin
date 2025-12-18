@@ -42,7 +42,7 @@
     {% for i in (1..3) %}
     <div class="col col--start gap--medium text--center">
       {% if forloop.index == 1 %}
-      <span class="title">{% if is_before_noon %}Tomorrow{% else %}{{ daily_dates[i] | date: "%A" }}{% endif %}</span>
+      <span class="title">{% if forloop.index == 1 %}Tomorrow{% else %}{{ daily_dates[i] | date: "%A" }}{% endif %}</span>
       {% else %}
       <span class="title">{{ daily_dates[i] | date: "%A" }}</span>
       {% endif %}
@@ -52,7 +52,7 @@
         <span class="description">{{ condition[i] }}</span>
       </div>
       <div class="w--full">
-        <span class="value value--xsmall">{{ daily_temps_min[i] | round }}° / {{ daily_temps_max[i] | round }}°</span>
+        <span class="value value--xsmall">{{ daily_temps_max[i] | round }}° / {{ daily_temps_min[i] | round }}°</span>
       </div>
       <div class="w--full">
         <div class="flex flex--row gap--xsmall">

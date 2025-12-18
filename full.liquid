@@ -4,7 +4,7 @@
       <img class="weather-image" src="https://usetrmnl.com/images/plugins/weather/{{ image_day[0] }}">
     </div>
     <div class="col col--span-3 col--end gap--medium">
-      <span class="title">{% if is_before_noon %}Today{% else %}Tomorrow{% endif %}: {{ condition[0] }}</span>
+      <span class="title">Today: {{ condition[0] }}</span>
       <div class="item">
         <div class="meta"></div>
         <div class="icon">
@@ -31,11 +31,11 @@
       <div class="item">
         <div class="meta"></div>
         <div class="icon">
-          <img class="weather-icon" src="https://usetrmnl.com/images/plugins/weather/wi-raindrops.svg">
+          <img class="weather-icon" src="https://usetrmnl.com/images/plugins/weather/wi-rain.svg">
         </div>
         <div class="content">
-          <span class="value value--small">{{ current.humidity }}%</span>
-          <span class="label">Humidity</span>
+          <span class="value value--small">{{ daily_rain_prob[0] | round }}%</span>
+          <span class="label">Rain</span>
         </div>
       </div>
       <div class="item">
@@ -56,7 +56,7 @@
     {% for i in (1..4) %}
     <div class="col col--start gap--medium text--center bg--gray-75 rounded--small p--2">
       {% if forloop.index == 1 %}
-      <span class="title text-stroke">{% if is_before_noon %}Tomorrow{% else %}{{ daily_dates[i] | date: "%A" }}{% endif %}</span>
+      <span class="title text-stroke">{% if forloop.index == 1 %}Tomorrow{% else %}{{ daily_dates[i] | date: "%A" }}{% endif %}</span>
       {% else %}
       <span class="title text-stroke">{{ daily_dates[i] | date: "%A" }}</span>
       {% endif %}
@@ -66,7 +66,7 @@
         <span class="value value--xsmall text-stroke">{% if condition[i] %}{{ condition[i] }}{% else %}Sunny{% endif %}</span>
       </div>
       <div class="w--full">
-        <span class="value value--xsmall text-stroke">{{ daily_temps_min[i] | round }}° / {{ daily_temps_max[i] | round }}°</span>
+        <span class="value value--xsmall text-stroke">{{ daily_temps_max[i] | round }}° / {{ daily_temps_min[i] | round }}°</span>
       </div>
       <div class="w--full">
         <div class="flex flex--row gap--xsmall">
