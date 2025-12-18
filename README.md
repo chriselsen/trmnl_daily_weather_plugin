@@ -60,6 +60,6 @@ The plugin recognizes and displays detailed weather conditions including:
 - Fog, Mist, Haze, Smoke, Dust
 - And many more specific conditions
 
-## License
+## About
 
 This plugin is designed for use with TRMNL devices and uses the OpenWeatherMap API for weather data.
