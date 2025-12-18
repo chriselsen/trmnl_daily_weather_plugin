@@ -1,30 +1,30 @@
 <div class="layout">
   <div class="grid grid--cols-3">
     <div class="col col--start gap text--center">
-      <span class="title">Now</span>
+      <span class="title">{% if is_before_noon %}Today{% else %}Tomorrow{% endif %}</span>
       <div class="w--full">
         <img class="weather-icon" src="https://usetrmnl.com/images/plugins/weather/{{ image_day[0] }}">
         <br/>
         <span class="description">{{ condition[0] }}</span>
       </div>
       <div class="w--full">
-        <span class="value value--xsmall">{{ current.temperature_2m | round }}°</span>
+        <span class="value value--xsmall">{{ daily_temps_min[0] | round }}° / {{ daily_temps_max[0] | round }}°</span>
       </div>
       <div class="w--full">
         <div class="flex flex--row gap--xsmall">
-          <img class="weather-icon-mini" src="https://usetrmnl.com/images/plugins/weather/wi-hot.svg">
-          <span class="value value--xxsmall mr--1">{{ daily.uv_index_max[0] | round }}</span>
+          <img class="weather-icon-mini" src="https://usetrmnl.com/images/plugins/weather/wi-raindrops.svg">
+          <span class="value value--xxsmall mr--1">{{ daily_humidity[0] | round }}%</span>
           <img class="weather-icon-mini" src="https://usetrmnl.com/images/plugins/weather/wi-rain.svg" />
-          <span class="value value--xxsmall">{{ daily.precipitation_probability_max[0] }}%</span>
+          <span class="value value--xxsmall">{{ daily_rain_prob[0] | round }}%</span>
         </div>
       </div>
     </div>
     {% for i in (1..2) %}
     <div class="col col--start gap text--center">
       {% if forloop.index == 1 %}
-      <span class="title">Tomorrow</span>
+      <span class="title">{% if is_before_noon %}Tomorrow{% else %}{{ daily_dates[i] | date: "%A" }}{% endif %}</span>
       {% else %}
-      <span class="title">{{ daily.time[i] | date: "%A" }}</span>
+      <span class="title">{{ daily_dates[i] | date: "%A" }}</span>
       {% endif %}
       <div class="w--full">
         <img class="weather-icon" src="https://usetrmnl.com/images/plugins/weather/{{ image_day[i] }}">
@@ -32,14 +32,14 @@
         <span class="description">{{ condition[i] }}</span>
       </div>
       <div class="w--full">
-        <span class="value value--xsmall">{{ daily.temperature_2m_min[i] | round }}° / {{ daily.temperature_2m_max[i] | round }}°</span>
+        <span class="value value--xsmall">{{ daily_temps_min[i] | round }}° / {{ daily_temps_max[i] | round }}°</span>
       </div>
       <div class="w--full">
         <div class="flex flex--row gap--xsmall">
-          <img class="weather-icon-mini" src="https://usetrmnl.com/images/plugins/weather/wi-hot.svg">
-          <span class="value value--xxsmall mr--1">{{ daily.uv_index_max[i] | round }}</span>
+          <img class="weather-icon-mini" src="https://usetrmnl.com/images/plugins/weather/wi-raindrops.svg">
+          <span class="value value--xxsmall mr--1">{{ daily_humidity[i] | round }}%</span>
           <img class="weather-icon-mini" src="https://usetrmnl.com/images/plugins/weather/wi-rain.svg" />
-          <span class="value value--xxsmall">{{ daily.precipitation_probability_max[i] }}%</span>
+          <span class="value value--xxsmall">{{ daily_rain_prob[i] | round }}%</span>
         </div>
       </div>
     </div>

@@ -4,7 +4,7 @@ no_screen_padding: 'no'
 dark_mode: 'no'
 static_data: ''
 polling_verb: get
-polling_url: https://api.open-meteo.com/v1/forecast?latitude={{ trmnl.plugin_settings.custom_fields_values.latitude }}&longitude={{ trmnl.plugin_settings.custom_fields_values.longitude }}&daily=weather_code,temperature_2m_max,temperature_2m_min,uv_index_max,precipitation_probability_max,precipitation_probability_min,precipitation_probability_mean&current=temperature_2m,relative_humidity_2m,weather_code,precipitation,is_day&timezone=auto&temperature_unit={{ trmnl.plugin_settings.custom_fields_values.temp_unit }}
+polling_url: https://api.openweathermap.org/data/2.5/forecast?lat={{ trmnl.plugin_settings.custom_fields_values.latitude }}&lon={{ trmnl.plugin_settings.custom_fields_values.longitude }}&appid={{ trmnl.plugin_settings.custom_fields_values.api_key }}&units={% if trmnl.plugin_settings.custom_fields_values.temp_unit == 'fahrenheit' %}imperial{% else %}metric{% endif %}
 polling_headers: ''
 polling_body: ''
 id: 198477
@@ -25,6 +25,12 @@ custom_fields:
   description: The longitude of your location
   placeholder: Longitude
   help_text: Go to <a href="https://www.latlong.net" target="_blank">https://www.latlong.net</a>, search for the desired place or navigate using the map, then copy the longitude.
+- keyname: api_key
+  field_type: string
+  name: OpenWeather API Key
+  description: Your OpenWeatherMap API key
+  placeholder: Enter your API key
+  help_text: Get your free API key at <a href="https://openweathermap.org/api" target="_blank">https://openweathermap.org/api</a>
 - keyname: temp_unit
   field_type: select
   name: Temperature Unit

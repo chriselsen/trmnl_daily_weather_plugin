@@ -17,76 +17,250 @@
 </style>
 
 {%liquid
-  assign is_day = current.is_day
-  assign image_day = ""
+  assign utc_timestamp = trmnl.system.timestamp_utc
+  assign local_timestamp = utc_timestamp | plus: city.timezone
+  assign local_hour = local_timestamp | date: "%H" | plus: 0
+  assign is_before_noon = false
+  if local_hour < 12
+    assign is_before_noon = true
+  endif
   
-  for i in (0..5)
-    if i == 0
-      assign code = current.weather_code
+  assign image_day = ""
+  assign condition = ""
+  assign daily_temps_max = ""
+  assign daily_temps_min = ""
+  assign daily_humidity = ""
+  assign daily_rain_prob = ""
+  assign daily_dates = ""
+  
+  assign target_dates = ""
+  assign today_date = local_timestamp | date: "%Y-%m-%d"
+  
+  if is_before_noon
+    assign target_dates = target_dates | append: today_date | append: ","
+  endif
+  
+  assign processed_dates = ""
+  for item in list
+    assign item_date = item.dt_txt | date: "%Y-%m-%d"
+    unless processed_dates contains item_date
+      assign processed_dates = processed_dates | append: item_date | append: ","
+      if is_before_noon == false and item_date != today_date
+        assign target_dates = target_dates | append: item_date | append: ","
+      elsif is_before_noon and item_date != today_date
+        assign target_dates = target_dates | append: item_date | append: ","
+      endif
+    endunless
+  endfor
+  
+  assign dates_array = target_dates | split: ","
+  
+  for i in (0..4)
+    if dates_array[i]
+      assign target_date = dates_array[i]
+      assign day_temp_max = -999
+      assign day_temp_min = 999
+      assign day_humidity_max = 0
+      assign day_rain_max = 0
+      assign day_code = 800
+      assign day_date = ""
+      
+      for item in list
+        assign item_date = item.dt_txt | date: "%Y-%m-%d"
+        if item_date == target_date
+          if item.main.temp_max > day_temp_max
+            assign day_temp_max = item.main.temp_max
+          endif
+          if item.main.temp_min < day_temp_min
+            assign day_temp_min = item.main.temp_min
+          endif
+          if item.main.humidity > day_humidity_max
+            assign day_humidity_max = item.main.humidity
+          endif
+          if item.pop
+            assign prob = item.pop | times: 100
+            if prob > day_rain_max
+              assign day_rain_max = prob
+            endif
+          endif
+          assign current_code = item.weather[0].id
+          assign current_priority = 0
+          assign item_pop = 0
+          if item.pop
+            assign item_pop = item.pop | times: 100
+          endif
+          
+          if current_code >= 200 and current_code < 300 and item_pop > 40
+            assign current_priority = 7
+          elsif current_code == 502 or current_code == 503 or current_code == 504
+            if item_pop > 50
+              assign current_priority = 6
+            endif
+          elsif current_code == 500 and item_pop > 10
+            assign current_priority = 6
+          elsif current_code >= 501 and current_code < 600 and item_pop > 30
+            assign current_priority = 6
+          elsif current_code >= 300 and current_code <= 301 and item_pop > 10
+            assign current_priority = 5
+          elsif current_code >= 302 and current_code < 400 and item_pop > 30
+            assign current_priority = 5
+          elsif current_code >= 600 and current_code < 700 and item_pop > 40
+            assign current_priority = 4
+          elsif current_code >= 700 and current_code < 800
+            assign current_priority = 3
+          elsif current_code > 800
+            assign current_priority = 2
+          elsif current_code == 800
+            assign current_priority = 1
+          endif
+          
+          assign existing_priority = 0
+          if day_code >= 200 and day_code < 300
+            assign existing_priority = 7
+          elsif day_code >= 500 and day_code < 600
+            assign existing_priority = 6
+          elsif day_code >= 300 and day_code < 400
+            assign existing_priority = 5
+          elsif day_code >= 600 and day_code < 700
+            assign existing_priority = 4
+          elsif day_code >= 700 and day_code < 800
+            assign existing_priority = 3
+          elsif day_code > 800
+            assign existing_priority = 2
+          elsif day_code == 800
+            assign existing_priority = 1
+          endif
+          
+          if current_priority > existing_priority
+            assign day_code = current_code
+            assign day_date = item.dt_txt
+          elsif current_priority == existing_priority
+            assign item_hour = item.dt_txt | date: "%H" | plus: 0
+            if item_hour >= 9 and item_hour <= 15
+              assign day_code = current_code
+              assign day_date = item.dt_txt
+            endif
+          endif
+        endif
+      endfor
+      
+      assign code = day_code
+      assign temp_max = day_temp_max
+      assign temp_min = day_temp_min
+      assign humidity = day_humidity_max
+      assign rain_prob = day_rain_max
+      assign date = day_date
     else
-      assign code = daily.weather_code[i]
+      assign code = 800
+      assign temp_max = 20
+      assign temp_min = 10
+      assign humidity = 50
+      assign rain_prob = 0
+      assign date = "2024-01-01 12:00:00"
     endif
-
-    if code == 0 or code == 1
-      if is_day == 1
-        assign image_day = image_day | append: "wi-day-sunny.svg,"
-        assign condition = condition | append: "Sunny,"
-      else
-        assign image_day = image_day | append: "wi-night-clear.svg,"
-        assign condition = condition | append: "Clear,"
-      endif
-    elsif code == 2 or code == 3
-      assign condition = condition | append: "Cloudy,"
-      if is_day == 1
-        assign image_day = image_day | append: "wi-day-cloudy.svg,"
-      else
-        assign image_day = image_day | append: "wi-night-cloudy.svg,"
-      endif
-    elsif code == 45 or code == 48
-      assign condition = condition | append: "Fog,"
-      if is_day == 1
-        assign image_day = image_day | append: "wi-day-fog.svg,"
-      else
-        assign image_day = image_day | append: "wi-night-fog.svg,"
-      endif
-    elsif code >= 51 and code <= 67
-      assign condition = condition | append: "Rain,"
-      if is_day == 1
-        assign image_day = image_day | append: "wi-day-rain.svg,"
-      else
-        assign image_day = image_day | append: "wi-night-rain.svg,"
-      endif
-    elsif code >= 71 and code <= 77
-      assign condition = condition | append: "Snow,"
-      if is_day == 1
-        assign image_day = image_day | append: "wi-day-snow.svg,"
-      else
-        assign image_day = image_day | append: "wi-night-snow.svg,"
-      endif
-    elsif code >= 80 and code <= 82
-      assign condition = condition | append: "Rain,"
-      if is_day == 1
-        assign image_day = image_day | append: "wi-day-rain.svg,"
-      else
-        assign image_day = image_day | append: "wi-night-rain.svg,"
-      endif
-    elsif code >= 85 and code <= 86
-      assign condition = condition | append: "Snow,"
-      if is_day == 1
-        assign image_day = image_day | append: "wi-day-snow.svg,"
-      else
-        assign image_day = image_day | append: "wi-night-snow.svg,"
-      endif
-    else
+    
+    assign daily_temps_max = daily_temps_max | append: temp_max | append: ","
+    assign daily_temps_min = daily_temps_min | append: temp_min | append: ","
+    assign daily_humidity = daily_humidity | append: humidity | append: ","
+    assign daily_rain_prob = daily_rain_prob | append: rain_prob | append: ","
+    assign daily_dates = daily_dates | append: date | append: ","
+    
+    if code == 200 or code == 201 or code == 202
+      assign condition = condition | append: "Thunderstorm,"
+      assign image_day = image_day | append: "wi-day-thunderstorm.svg,"
+    elsif code >= 210 and code <= 221
+      assign condition = condition | append: "Lightning,"
+      assign image_day = image_day | append: "wi-day-lightning.svg,"
+    elsif code >= 230 and code <= 232
       assign condition = condition | append: "Storm,"
-      if is_day == 1
-        assign image_day = image_day | append: "wi-day-thunderstorm.svg,"
-      else
-        assign image_day = image_day | append: "wi-night-thunderstorm.svg,"
-      endif
+      assign image_day = image_day | append: "wi-day-storm-showers.svg,"
+    elsif code == 300 or code == 301
+      assign condition = condition | append: "Light Drizzle,"
+      assign image_day = image_day | append: "wi-day-sprinkle.svg,"
+    elsif code >= 302 and code <= 321
+      assign condition = condition | append: "Drizzle,"
+      assign image_day = image_day | append: "wi-day-rain.svg,"
+    elsif code == 500
+      assign condition = condition | append: "Light Rain,"
+      assign image_day = image_day | append: "wi-day-sprinkle.svg,"
+    elsif code == 501
+      assign condition = condition | append: "Moderate Rain,"
+      assign image_day = image_day | append: "wi-day-rain.svg,"
+    elsif code == 502 or code == 503
+      assign condition = condition | append: "Heavy Rain,"
+      assign image_day = image_day | append: "wi-day-rain.svg,"
+    elsif code == 504
+      assign condition = condition | append: "Extreme Rain,"
+      assign image_day = image_day | append: "wi-day-rain.svg,"
+    elsif code >= 511 and code <= 531
+      assign condition = condition | append: "Showers,"
+      assign image_day = image_day | append: "wi-day-showers.svg,"
+    elsif code == 600
+      assign condition = condition | append: "Light Snow,"
+      assign image_day = image_day | append: "wi-day-snow.svg,"
+    elsif code == 601
+      assign condition = condition | append: "Snow,"
+      assign image_day = image_day | append: "wi-day-snow.svg,"
+    elsif code == 602
+      assign condition = condition | append: "Heavy Snow,"
+      assign image_day = image_day | append: "wi-day-snow.svg,"
+    elsif code >= 611 and code <= 622
+      assign condition = condition | append: "Sleet,"
+      assign image_day = image_day | append: "wi-day-sleet.svg,"
+    elsif code == 701
+      assign condition = condition | append: "Mist,"
+      assign image_day = image_day | append: "wi-day-fog.svg,"
+    elsif code == 711
+      assign condition = condition | append: "Smoke,"
+      assign image_day = image_day | append: "wi-smoke.svg,"
+    elsif code == 721
+      assign condition = condition | append: "Haze,"
+      assign image_day = image_day | append: "wi-day-haze.svg,"
+    elsif code == 731 or code == 761
+      assign condition = condition | append: "Dust,"
+      assign image_day = image_day | append: "wi-dust.svg,"
+    elsif code == 741
+      assign condition = condition | append: "Fog,"
+      assign image_day = image_day | append: "wi-day-fog.svg,"
+    elsif code == 751
+      assign condition = condition | append: "Sand,"
+      assign image_day = image_day | append: "wi-sandstorm.svg,"
+    elsif code == 762
+      assign condition = condition | append: "Ash,"
+      assign image_day = image_day | append: "wi-volcano.svg,"
+    elsif code == 771
+      assign condition = condition | append: "Squall,"
+      assign image_day = image_day | append: "wi-strong-wind.svg,"
+    elsif code == 781
+      assign condition = condition | append: "Tornado,"
+      assign image_day = image_day | append: "wi-tornado.svg,"
+    elsif code == 800
+      assign image_day = image_day | append: "wi-day-sunny.svg,"
+      assign condition = condition | append: "Clear,"
+    elsif code == 801
+      assign condition = condition | append: "Few Clouds,"
+      assign image_day = image_day | append: "wi-day-sunny-overcast.svg,"
+    elsif code == 802
+      assign condition = condition | append: "Scattered Clouds,"
+      assign image_day = image_day | append: "wi-day-cloudy.svg,"
+    elsif code == 803
+      assign condition = condition | append: "Broken Clouds,"
+      assign image_day = image_day | append: "wi-day-cloudy.svg,"
+    elsif code == 804
+      assign condition = condition | append: "Overcast,"
+      assign image_day = image_day | append: "wi-cloudy.svg,"
+    else
+      assign condition = condition | append: "Unknown,"
+      assign image_day = image_day | append: "wi-day-sunny.svg,"
     endif
   endfor
-
+  
   assign image_day = image_day | split: ","
   assign condition = condition | split: ","
+  assign daily_temps_max = daily_temps_max | split: ","
+  assign daily_temps_min = daily_temps_min | split: ","
+  assign daily_humidity = daily_humidity | split: ","
+  assign daily_rain_prob = daily_rain_prob | split: ","
+  assign daily_dates = daily_dates | split: ","
+  assign update_time = local_timestamp
 %}
