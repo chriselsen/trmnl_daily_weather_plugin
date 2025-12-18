@@ -34,18 +34,18 @@
           <img class="weather-icon" src="https://usetrmnl.com/images/plugins/weather/wi-raindrops.svg">
         </div>
         <div class="content">
-          <span class="value value--small">{{ list[0].main.humidity }}%</span>
+          <span class="value value--small">{{ current.humidity }}%</span>
           <span class="label">Humidity</span>
         </div>
       </div>
       <div class="item">
         <div class="meta"></div>
         <div class="icon">
-          <img class="weather-icon" src="https://usetrmnl.com/images/plugins/weather/wi-rain.svg">
+          <img class="weather-icon" src="https://usetrmnl.com/images/plugins/weather/wi-hot.svg">
         </div>
         <div class="content">
-          <span class="value value--small">{{ daily_rain_prob[0] | round }}%</span>
-          <span class="label">Rain</span>
+          <span class="value value--small">{{ daily_uv_index[0] | round }}</span>
+          <span class="label">UV Index</span>
         </div>
       </div>
     </div>
@@ -70,8 +70,8 @@
       </div>
       <div class="w--full">
         <div class="flex flex--row gap--xsmall">
-          <img class="weather-icon-mini image-stroke" src="https://usetrmnl.com/images/plugins/weather/wi-raindrops.svg">
-          <span class="value value--xxsmall text-stroke mr--1">{{ daily_humidity[i] | round }}%</span>
+          <img class="weather-icon-mini image-stroke" src="https://usetrmnl.com/images/plugins/weather/wi-hot.svg">
+          <span class="value value--xxsmall text-stroke mr--1">{{ daily_uv_index[i] | round }}</span>
           <img class="weather-icon-mini image-stroke" src="https://usetrmnl.com/images/plugins/weather/wi-rain.svg" />
           <span class="value value--xxsmall text-stroke">{{ daily_rain_prob[i] | round }}%</span>
         </div>
@@ -82,6 +82,6 @@
 </div>
 <div class="title_bar">
   <img class="image" src="https://usetrmnl.com/images/plugins/weather--render.svg">
-  <h1 class="title">Daily Weather - Updated: {{ update_time | date: "%H:%M" }}</h1>
+  <h1 class="title">OpenWeather Forecast - Updated: {{ update_time | date: "%H:%M" }}</h1>
   <span class="instance">{{ trmnl.plugin_settings.custom_fields_values.location_name }}</span>
 </div>

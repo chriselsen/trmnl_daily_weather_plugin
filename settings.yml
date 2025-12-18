@@ -4,7 +4,7 @@ no_screen_padding: 'no'
 dark_mode: 'no'
 static_data: ''
 polling_verb: get
-polling_url: https://api.openweathermap.org/data/2.5/forecast?lat={{ trmnl.plugin_settings.custom_fields_values.latitude }}&lon={{ trmnl.plugin_settings.custom_fields_values.longitude }}&appid={{ trmnl.plugin_settings.custom_fields_values.api_key }}&units={% if trmnl.plugin_settings.custom_fields_values.temp_unit == 'fahrenheit' %}imperial{% else %}metric{% endif %}
+polling_url: https://api.openweathermap.org/data/3.0/onecall?lat={{ trmnl.plugin_settings.custom_fields_values.latitude }}&lon={{ trmnl.plugin_settings.custom_fields_values.longitude }}&appid={{ trmnl.plugin_settings.custom_fields_values.api_key }}&units={% if trmnl.plugin_settings.custom_fields_values.temp_unit == 'fahrenheit' %}imperial{% else %}metric{% endif %}&exclude=minutely,hourly,alerts
 polling_headers: ''
 polling_body: ''
 id: 198477

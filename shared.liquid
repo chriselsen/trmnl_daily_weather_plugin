@@ -18,7 +18,7 @@
 
 {%liquid
   assign utc_timestamp = trmnl.system.timestamp_utc
-  assign local_timestamp = utc_timestamp | plus: city.timezone
+  assign local_timestamp = utc_timestamp | plus: timezone_offset
   assign local_hour = local_timestamp | date: "%H" | plus: 0
   assign is_before_noon = false
   if local_hour < 12
@@ -31,138 +31,36 @@
   assign daily_temps_min = ""
   assign daily_humidity = ""
   assign daily_rain_prob = ""
+  assign daily_uv_index = ""
   assign daily_dates = ""
   
-  assign target_dates = ""
-  assign today_date = local_timestamp | date: "%Y-%m-%d"
-  
-  if is_before_noon
-    assign target_dates = target_dates | append: today_date | append: ","
-  endif
-  
-  assign processed_dates = ""
-  for item in list
-    assign item_date = item.dt_txt | date: "%Y-%m-%d"
-    unless processed_dates contains item_date
-      assign processed_dates = processed_dates | append: item_date | append: ","
-      if is_before_noon == false and item_date != today_date
-        assign target_dates = target_dates | append: item_date | append: ","
-      elsif is_before_noon and item_date != today_date
-        assign target_dates = target_dates | append: item_date | append: ","
-      endif
-    endunless
-  endfor
-  
-  assign dates_array = target_dates | split: ","
-  
   for i in (0..4)
-    if dates_array[i]
-      assign target_date = dates_array[i]
-      assign day_temp_max = -999
-      assign day_temp_min = 999
-      assign day_humidity_max = 0
-      assign day_rain_max = 0
-      assign day_code = 800
-      assign day_date = ""
-      
-      for item in list
-        assign item_date = item.dt_txt | date: "%Y-%m-%d"
-        if item_date == target_date
-          if item.main.temp_max > day_temp_max
-            assign day_temp_max = item.main.temp_max
-          endif
-          if item.main.temp_min < day_temp_min
-            assign day_temp_min = item.main.temp_min
-          endif
-          if item.main.humidity > day_humidity_max
-            assign day_humidity_max = item.main.humidity
-          endif
-          if item.pop
-            assign prob = item.pop | times: 100
-            if prob > day_rain_max
-              assign day_rain_max = prob
-            endif
-          endif
-          assign current_code = item.weather[0].id
-          assign current_priority = 0
-          assign item_pop = 0
-          if item.pop
-            assign item_pop = item.pop | times: 100
-          endif
-          
-          if current_code >= 200 and current_code < 300 and item_pop > 40
-            assign current_priority = 7
-          elsif current_code == 502 or current_code == 503 or current_code == 504
-            if item_pop > 50
-              assign current_priority = 6
-            endif
-          elsif current_code == 500 and item_pop > 10
-            assign current_priority = 6
-          elsif current_code >= 501 and current_code < 600 and item_pop > 30
-            assign current_priority = 6
-          elsif current_code >= 300 and current_code <= 301 and item_pop > 10
-            assign current_priority = 5
-          elsif current_code >= 302 and current_code < 400 and item_pop > 30
-            assign current_priority = 5
-          elsif current_code >= 600 and current_code < 700 and item_pop > 40
-            assign current_priority = 4
-          elsif current_code >= 700 and current_code < 800
-            assign current_priority = 3
-          elsif current_code > 800
-            assign current_priority = 2
-          elsif current_code == 800
-            assign current_priority = 1
-          endif
-          
-          assign existing_priority = 0
-          if day_code >= 200 and day_code < 300
-            assign existing_priority = 7
-          elsif day_code >= 500 and day_code < 600
-            assign existing_priority = 6
-          elsif day_code >= 300 and day_code < 400
-            assign existing_priority = 5
-          elsif day_code >= 600 and day_code < 700
-            assign existing_priority = 4
-          elsif day_code >= 700 and day_code < 800
-            assign existing_priority = 3
-          elsif day_code > 800
-            assign existing_priority = 2
-          elsif day_code == 800
-            assign existing_priority = 1
-          endif
-          
-          if current_priority > existing_priority
-            assign day_code = current_code
-            assign day_date = item.dt_txt
-          elsif current_priority == existing_priority
-            assign item_hour = item.dt_txt | date: "%H" | plus: 0
-            if item_hour >= 9 and item_hour <= 15
-              assign day_code = current_code
-              assign day_date = item.dt_txt
-            endif
-          endif
-        endif
-      endfor
-      
-      assign code = day_code
-      assign temp_max = day_temp_max
-      assign temp_min = day_temp_min
-      assign humidity = day_humidity_max
-      assign rain_prob = day_rain_max
-      assign date = day_date
+    if daily[i]
+      assign code = daily[i].weather[0].id
+      assign temp_max = daily[i].temp.max
+      assign temp_min = daily[i].temp.min
+      assign humidity = daily[i].humidity
+      assign rain_prob = 0
+      if daily[i].pop
+        assign rain_prob = daily[i].pop | times: 100
+      endif
+      assign uv_index = daily[i].uvi
+      assign date = daily[i].dt
     else
       assign code = 800
       assign temp_max = 20
       assign temp_min = 10
       assign humidity = 50
       assign rain_prob = 0
-      assign date = "2024-01-01 12:00:00"
+      assign uv_index = 0
+      assign date = utc_timestamp
     endif
     
     assign daily_temps_max = daily_temps_max | append: temp_max | append: ","
     assign daily_temps_min = daily_temps_min | append: temp_min | append: ","
     assign daily_humidity = daily_humidity | append: humidity | append: ","
     assign daily_rain_prob = daily_rain_prob | append: rain_prob | append: ","
+    assign daily_uv_index = daily_uv_index | append: uv_index | append: ","
     assign daily_dates = daily_dates | append: date | append: ","
     
     if code == 200 or code == 201 or code == 202
@@ -261,6 +159,7 @@
   assign daily_temps_min = daily_temps_min | split: ","
   assign daily_humidity = daily_humidity | split: ","
   assign daily_rain_prob = daily_rain_prob | split: ","
+  assign daily_uv_index = daily_uv_index | split: ","
   assign daily_dates = daily_dates | split: ","
   assign update_time = local_timestamp
 %}

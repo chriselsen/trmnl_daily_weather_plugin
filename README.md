@@ -17,7 +17,7 @@ A weather forecast plugin for TRMNL devices that displays current conditions and
 
 ### Required Settings
 
-- **OpenWeather API Key**: Get your free API key at [OpenWeatherMap](https://openweathermap.org/api)
+- **OpenWeather API Key**: Get your API key with One Call API 3.0 subscription at [OpenWeatherMap](https://openweathermap.org/api/one-call-3)
 - **Latitude**: The latitude of your location
 - **Longitude**: The longitude of your location
 
@@ -32,18 +32,19 @@ The plugin displays:
 - Current weather conditions with appropriate icons
 - Daily high/low temperatures
 - Humidity levels
+- UV Index
 - Precipitation probability
 - 5-day extended forecast
 
 ## API Information
 
-- **Data Source**: OpenWeatherMap 5-day/3-hour forecast API
+- **Data Source**: OpenWeatherMap One Call API 3.0
 - **Update Frequency**: Every 12 hours (720 minutes)
 - **Timezone Support**: Uses location-specific timezone for accurate forecasting
 
 ## Installation
 
-1. Get your OpenWeatherMap API key
+1. Get your OpenWeatherMap API key with One Call API 3.0 subscription
 2. Import the plugin ZIP file into your TRMNL dashboard
 3. Configure your location coordinates and API key
 4. Select your preferred temperature unit
