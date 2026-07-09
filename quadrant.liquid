@@ -1,7 +1,7 @@
 <div class="layout">
   <div class="grid grid--cols-3">
     <div class="col col--start gap text--center">
-      <span class="title">Today</span>
+      <span class="title font--bold">Today</span>
       <div class="w--full">
         <img class="weather-icon" src="https://usetrmnl.com/images/plugins/weather/{{ image_day[0] }}">
         <br/>
@@ -13,18 +13,18 @@
       <div class="w--full">
         <div class="flex flex--row gap--xsmall">
           <img class="weather-icon-mini image-stroke" src="https://usetrmnl.com/images/plugins/weather/wi-rain.svg" />
-          <span class="value value--xxsmall text-stroke">{{ daily_rain_prob[i] | round }}%</span>
-          <img class="weather-icon-mini image-stroke" src="https://usetrmnl.com/images/plugins/weather/wi-hot.svg">
-          <span class="value value--xxsmall text-stroke mr--1">{{ daily_uv_index[i] | round }}</span>
+          <span class="value value--xxsmall text-stroke">{{ daily_rain_prob[0] | round }}%</span>
+          <img class="weather-icon-mini image-stroke" src="https://usetrmnl.com/images/plugins/weather/{{ daily_wind_icon[0] }}">
+          <span class="value value--xxsmall text-stroke mr--1">{{ daily_wind_speed[0] | round }}m/s</span>
         </div>
       </div>
     </div>
     {% for i in (1..2) %}
     <div class="col col--start gap text--center">
       {% if forloop.index == 1 %}
-      <span class="title">{% if forloop.index == 1 %}Tomorrow{% else %}{{ daily_dates[i] | date: "%A" }}{% endif %}</span>
+      <span class="title font--bold">{% if forloop.index == 1 %}Tomorrow{% else %}{{ daily_dates[i] | date: "%A" }}{% endif %}</span>
       {% else %}
-      <span class="title">{{ daily_dates[i] | date: "%A" }}</span>
+      <span class="title font--bold">{{ daily_dates[i] | date: "%A" }}</span>
       {% endif %}
       <div class="w--full">
         <img class="weather-icon" src="https://usetrmnl.com/images/plugins/weather/{{ image_day[i] }}">
@@ -38,8 +38,8 @@
         <div class="flex flex--row gap--xsmall">
           <img class="weather-icon-mini image-stroke" src="https://usetrmnl.com/images/plugins/weather/wi-rain.svg" />
           <span class="value value--xxsmall text-stroke">{{ daily_rain_prob[i] | round }}%</span>
-          <img class="weather-icon-mini image-stroke" src="https://usetrmnl.com/images/plugins/weather/wi-hot.svg">
-          <span class="value value--xxsmall text-stroke mr--1">{{ daily_uv_index[i] | round }}</span>
+          <img class="weather-icon-mini image-stroke" src="https://usetrmnl.com/images/plugins/weather/{{ daily_wind_icon[i] }}">
+          <span class="value value--xxsmall text-stroke mr--1">{{ daily_wind_speed[i] | round }}m/s</span>
         </div>
       </div>
     </div>
