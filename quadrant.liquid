@@ -12,10 +12,10 @@
       </div>
       <div class="w--full">
         <div class="flex flex--row gap--xsmall">
-          <img class="weather-icon-mini" src="https://usetrmnl.com/images/plugins/weather/wi-raindrops.svg">
-          <span class="value value--xxsmall mr--1">{{ daily_humidity[0] }}%</span>
-          <img class="weather-icon-mini" src="https://usetrmnl.com/images/plugins/weather/wi-rain.svg" />
-          <span class="value value--xxsmall">{{ daily_rain_prob[0] | round }}%</span>
+          <img class="weather-icon-mini image-stroke" src="https://usetrmnl.com/images/plugins/weather/wi-rain.svg" />
+          <span class="value value--xxsmall text-stroke">{{ daily_rain_prob[i] | round }}%</span>
+          <img class="weather-icon-mini image-stroke" src="https://usetrmnl.com/images/plugins/weather/wi-hot.svg">
+          <span class="value value--xxsmall text-stroke mr--1">{{ daily_uv_index[i] | round }}</span>
         </div>
       </div>
     </div>
@@ -36,10 +36,10 @@
       </div>
       <div class="w--full">
         <div class="flex flex--row gap--xsmall">
-          <img class="weather-icon-mini" src="https://usetrmnl.com/images/plugins/weather/wi-raindrops.svg">
-          <span class="value value--xxsmall mr--1">{{ daily_uv_index[i] | round }}</span>
-          <img class="weather-icon-mini" src="https://usetrmnl.com/images/plugins/weather/wi-rain.svg" />
-          <span class="value value--xxsmall">{{ daily_rain_prob[i] | round }}%</span>
+          <img class="weather-icon-mini image-stroke" src="https://usetrmnl.com/images/plugins/weather/wi-rain.svg" />
+          <span class="value value--xxsmall text-stroke">{{ daily_rain_prob[i] | round }}%</span>
+          <img class="weather-icon-mini image-stroke" src="https://usetrmnl.com/images/plugins/weather/wi-hot.svg">
+          <span class="value value--xxsmall text-stroke mr--1">{{ daily_uv_index[i] | round }}</span>
         </div>
       </div>
     </div>

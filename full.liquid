@@ -41,11 +41,11 @@
       <div class="item">
         <div class="meta"></div>
         <div class="icon">
-          <img class="weather-icon" src="https://usetrmnl.com/images/plugins/weather/wi-hot.svg">
+          <img class="weather-icon" src="https://usetrmnl.com/images/plugins/weather/wi-strong-wind.svg">
         </div>
         <div class="content">
-          <span class="value value--small">{{ daily_uv_index[0] | round }}</span>
-          <span class="label">UV Index</span>
+          <span class="value value--small">{{ daily_wind_speed[0] | round }} m/s</span>
+          <span class="label">Wind Speed</span>
         </div>
       </div>
     </div>
@@ -70,10 +70,10 @@
       </div>
       <div class="w--full">
         <div class="flex flex--row gap--xsmall">
-          <img class="weather-icon-mini image-stroke" src="https://usetrmnl.com/images/plugins/weather/wi-hot.svg">
-          <span class="value value--xxsmall text-stroke mr--1">{{ daily_uv_index[i] | round }}</span>
           <img class="weather-icon-mini image-stroke" src="https://usetrmnl.com/images/plugins/weather/wi-rain.svg" />
           <span class="value value--xxsmall text-stroke">{{ daily_rain_prob[i] | round }}%</span>
+          <img class="weather-icon-mini image-stroke" src="https://usetrmnl.com/images/plugins/weather/wi-strong-wind.svg">
+          <span class="value value--xxsmall text-stroke mr--1">{{ daily_wind_speed[i] | round }}m/s</span>
         </div>
       </div>
     </div>

@@ -32,6 +32,7 @@
   assign daily_humidity = ""
   assign daily_rain_prob = ""
   assign daily_uv_index = ""
+  assign daily_wind_speed = ""  
   assign daily_dates = ""
   
   for i in (0..4)
@@ -45,6 +46,7 @@
         assign rain_prob = daily[i].pop | times: 100
       endif
       assign uv_index = daily[i].uvi
+      assign wind_speed = daily[i].wind_speed    
       assign date = daily[i].dt
     else
       assign code = 800
@@ -53,6 +55,7 @@
       assign humidity = 50
       assign rain_prob = 0
       assign uv_index = 0
+      assign wind_speed = 0
       assign date = utc_timestamp
     endif
     
@@ -61,6 +64,7 @@
     assign daily_humidity = daily_humidity | append: humidity | append: ","
     assign daily_rain_prob = daily_rain_prob | append: rain_prob | append: ","
     assign daily_uv_index = daily_uv_index | append: uv_index | append: ","
+    assign daily_wind_speed = daily_wind_speed | append: wind_speed | append: ","
     assign daily_dates = daily_dates | append: date | append: ","
     
     if code == 200 or code == 201 or code == 202
@@ -160,6 +164,7 @@
   assign daily_humidity = daily_humidity | split: ","
   assign daily_rain_prob = daily_rain_prob | split: ","
   assign daily_uv_index = daily_uv_index | split: ","
+  assign daily_wind_speed = daily_wind_speed | split: ","    
   assign daily_dates = daily_dates | split: ","
   assign update_time = local_timestamp
 %}
